@@ -1,0 +1,72 @@
+services:
+  web:
+    build:
+      context: ./lapakin-app
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ./lapakin-core
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgres://lapakin:lapakin@db:5432/lapakin
+      JWT_SECRET: lapakin-production-secret-key-at-least-32-chars
+      JWT_ACCESS_TTL_SEC: 900
+      REFRESH_TTL_DAYS: 7
+      CORS_ORIGIN: "*"
+      SEED_IF_EMPTY: "1"
+    # container tidak punya .env, jadi panggil tsx langsung (script db:* memakai --env-file=.env)
+    command: >
+      sh -c "pnpm exec tsx src/infrastructure/database/migrate.ts &&
+             pnpm exec tsx src/infrastructure/database/seed.ts &&
+             pnpm start"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: lapakin
+      POSTGRES_PASSWORD: lapakin
+      POSTGRES_DB: lapakin
+    ports:
+      - "5433:5432"
+    volumes:
+      - lapakin-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lapakin -d lapakin"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  # DB terpisah untuk test supaya data dev tidak terhapus. tmpfs: cepat dan tidak persisten.
+  db-test:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: lapakin
+      POSTGRES_PASSWORD: lapakin
+      POSTGRES_DB: lapakin_test
+    ports:
+      - "5434:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lapakin -d lapakin_test"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  lapakin-db:

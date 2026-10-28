@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: lapakin
+          POSTGRES_PASSWORD: lapakin
+          POSTGRES_DB: lapakin
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10.32.1
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Typecheck Backend
+        run: pnpm --filter lapakin-core typecheck
+
+      - name: Run migrations
+        run: pnpm --filter lapakin-core db:migrate
+        env:
+          DATABASE_URL: postgres://lapakin:lapakin@localhost:5433/lapakin
+
+      - name: Run database seeder
+        run: pnpm --filter lapakin-core db:seed
+        env:
+          DATABASE_URL: postgres://lapakin:lapakin@localhost:5433/lapakin
+
+      - name: Run integration tests
+        run: pnpm --filter lapakin-core test
+        env:
+          DATABASE_URL: postgres://lapakin:lapakin@localhost:5433/lapakin
+          JWT_SECRET: ci-testing-jwt-secret-key-at-least-32-chars-long
+
+      - name: Typecheck Frontend
+        run: pnpm --filter lapakin-app typecheck
+
+      - name: Build Frontend
+        run: pnpm --filter lapakin-app build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3000

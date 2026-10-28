@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.next/
+out/
+coverage/
+.env
+.env.*
+!.env.example
+!.env.local.example
+*.log
+.DS_Store
+.turbo/
+.vscode/
+.agents/
+.claude/
+skills-lock.json
+
