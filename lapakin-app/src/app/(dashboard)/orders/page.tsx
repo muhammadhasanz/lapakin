@@ -155,44 +155,42 @@ export default function OrdersListPage() {
 
       {/* Filter Card */}
       <Card className="border-slate-200">
-        <CardContent className="p-4">
-          <form onSubmit={handleApplyFilter} className="flex flex-col gap-3 md:flex-row md:items-end">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:flex sm:items-center">
-              <div className="space-y-1">
-                <Label htmlFor="from" className="text-xs text-slate-500">
-                  From Date
-                </Label>
-                <Input
-                  id="from"
-                  type="date"
-                  className="h-9 text-xs"
-                  value={fromInput}
-                  onChange={(e) => setFromInput(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="to" className="text-xs text-slate-500">
-                  To Date
-                </Label>
-                <Input
-                  id="to"
-                  type="date"
-                  className="h-9 text-xs"
-                  value={toInput}
-                  onChange={(e) => setToInput(e.target.value)}
-                />
-              </div>
+        <CardContent>
+          <form onSubmit={handleApplyFilter} className="flex flex-wrap items-end gap-3">
+            <div className="flex flex-col gap-1 w-full sm:w-44">
+              <Label htmlFor="from" className="text-xs text-slate-500">
+                From Date
+              </Label>
+              <Input
+                id="from"
+                type="date"
+                className="h-9 text-xs"
+                value={fromInput}
+                onChange={(e) => setFromInput(e.target.value)}
+              />
             </div>
 
-            <div className="flex-1 space-y-1 min-w-[200px]">
+            <div className="flex flex-col gap-1 w-full sm:w-44">
+              <Label htmlFor="to" className="text-xs text-slate-500">
+                To Date
+              </Label>
+              <Input
+                id="to"
+                type="date"
+                className="h-9 text-xs"
+                value={toInput}
+                onChange={(e) => setToInput(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-1 w-full sm:w-64">
               <Label className="text-xs text-slate-500">Customer</Label>
               <Select
                 items={customerFilterItems}
                 value={customerId}
                 onValueChange={(val) => setCustomerId(val ?? 'all')}
               >
-                <SelectTrigger className="h-9 w-full text-xs">
+                <SelectTrigger className="h-9 data-[size=default]:h-9 w-full text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -207,7 +205,7 @@ export default function OrdersListPage() {
               </Select>
             </div>
 
-            <div className="flex items-center gap-2 pt-2 md:pt-0">
+            <div className="flex items-center gap-2">
               <Button type="submit" variant="secondary" size="sm" className="gap-1.5 h-9 text-xs">
                 <Filter className="h-3.5 w-3.5" />
                 Filter

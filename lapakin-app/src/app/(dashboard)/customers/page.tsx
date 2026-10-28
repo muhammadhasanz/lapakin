@@ -220,7 +220,7 @@ export default function CustomersPage() {
 
       {/* Filter & Search Bar */}
       <Card className="border-slate-200">
-        <CardContent className="p-4">
+        <CardContent>
           <form onSubmit={handleSearchSubmit} className="flex max-w-md items-center gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
@@ -232,7 +232,7 @@ export default function CustomersPage() {
                 onChange={(e) => setSearchInput(e.target.value)}
               />
             </div>
-            <Button type="submit" variant="secondary" size="sm">
+            <Button type="submit" variant="secondary">
               Search
             </Button>
             {searchQuery && (

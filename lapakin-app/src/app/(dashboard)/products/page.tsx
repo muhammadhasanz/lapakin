@@ -225,7 +225,7 @@ export default function ProductsPage() {
 
       {/* Filter & Search Bar */}
       <Card className="border-slate-200">
-        <CardContent className="p-4">
+        <CardContent>
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <form onSubmit={handleSearchSubmit} className="flex flex-1 items-center gap-2">
               <div className="relative flex-1 max-w-sm">
@@ -238,14 +238,13 @@ export default function ProductsPage() {
                   onChange={(e) => setSearchInput(e.target.value)}
                 />
               </div>
-              <Button type="submit" variant="secondary" size="sm">
+              <Button type="submit" variant="secondary">
                 Search
               </Button>
               {searchQuery && (
                 <Button
                   type="button"
                   variant="ghost"
-                  size="sm"
                   onClick={() => {
                     setSearchInput('');
                     setSearchQuery('');
@@ -268,7 +267,7 @@ export default function ProductsPage() {
                   setPage(1);
                 }}
               >
-                <SelectTrigger className="h-9 w-[180px] text-xs">
+                <SelectTrigger className="w-[180px] text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

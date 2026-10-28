@@ -69,7 +69,7 @@ export default function LoginPage() {
         </CardHeader>
 
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 pb-5">
             {errorMessage && (
               <div className="rounded-md bg-destructive/10 p-3 text-sm font-medium text-destructive">
                 {errorMessage}

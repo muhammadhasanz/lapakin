@@ -1,3 +1,24 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
+
+// Gracefully load .env if available without throwing in CI/Docker environments
+const candidateEnvPaths = [
+  path.resolve(process.cwd(), '.env'),
+  path.resolve(import.meta.dirname, '../../.env'),
+];
+
+for (const envPath of candidateEnvPaths) {
+  if (fs.existsSync(envPath)) {
+    try {
+      process.loadEnvFile(envPath);
+      break;
+    } catch {
+      // Ignore errors if .env is unreadable
+    }
+  }
+}
+
 const config = {
   app: {
     name: 'lapakin-core',

@@ -43,6 +43,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Create .env for backend
+        run: cp lapakin-core/.env.example lapakin-core/.env
+
       - name: Typecheck Backend
         run: pnpm --filter lapakin-core typecheck
 
